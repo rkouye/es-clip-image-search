@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION:-7.11.1}
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "${ES_PORT:-9200}:9200"
+    networks:
+      - net1
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ES_VERSION:-7.11.1}
+    ports:
+      - "${KIB_PORT:-5601}:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    networks:
+      - net1
+
+volumes:
+  es-data:
+
+networks:
+  net1:
+    driver: bridge
