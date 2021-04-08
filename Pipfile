@@ -14,3 +14,6 @@ autopep8 = "*"
 
 [requires]
 python_version = "3.9"
+
+[scripts]
+index-precomputed = "python -m scripts.commands index-precomputed"
