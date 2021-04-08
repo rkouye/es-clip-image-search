@@ -7,8 +7,10 @@ name = "pypi"
 pandas = "*"
 click = "*"
 numpy = "*"
+elasticsearch = {extras = ["async"], version = "*"}
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.9"
