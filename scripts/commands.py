@@ -9,7 +9,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--es_url', default='http://localhost:'+(os.environ.get('ES_PORT') or '9200'))
+@click.option('--es_url', default=os.environ.get('ES_URL'))
 @click.option('--index_name', default='photos')
 @click.option('--start', type=click.INT, default=None)
 @click.option('--end', type=click.INT, default=None)
