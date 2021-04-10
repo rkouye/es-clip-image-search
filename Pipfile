@@ -8,12 +8,17 @@ pandas = "*"
 click = "*"
 numpy = "*"
 elasticsearch = {extras = ["async"], version = "*"}
+sanic = "*"
+torch = "==1.7.1"
+torchvision = "==0.8.2"
+clip = {git = "https://github.com/openai/CLIP.git"}
 
 [dev-packages]
 autopep8 = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.7"
 
 [scripts]
 index-precomputed = "python -m scripts.commands index-precomputed"
+api = "sanic api.server.app --debug"
