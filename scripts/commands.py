@@ -16,6 +16,7 @@ def cli():
 @click.argument('ids_filename', type=click.Path(exists=True))
 @click.argument('features_filename', type=click.Path(exists=True))
 def index_precomputed(ids_filename, features_filename, es_url, index_name, start, end):
+    ensure_index_exist(es_url=es_url, index_name=index_name)
     ids, features = read_photos(
         ids_filename=ids_filename, features_filename=features_filename)
     load_photos_in_index(es_url=es_url, index_name=index_name,
