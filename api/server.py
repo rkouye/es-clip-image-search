@@ -1,12 +1,16 @@
 from sanic import Sanic
 from sanic.log import logger
 from sanic.response import json
+from api.cors import add_cors_headers
 import torch
 import os
 import clip
 from elasticsearch import AsyncElasticsearch
 
 app = Sanic("image-search-api")
+# Fill in CORS headers
+app.register_middleware(add_cors_headers, "response")
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -23,15 +27,15 @@ es = AsyncElasticsearch([os.environ.get('ES_URL')])
 
 def encode_query(query: str):
     with torch.no_grad():
-        # Encode and normalize the search query using CLIP
         text_encoded = model.encode_text(clip.tokenize(query).to(device))
         text_encoded /= text_encoded.norm(dim=-1, keepdim=True)
         return text_encoded.tolist()[0]
 
 
 @app.get("/")
-async def hello_world(request):
-    text_features = encode_query(request.args.get('search'))
+async def search(request):
+    search_term = request.args.get('search', 'dogs playing in the snow')
+    text_features = encode_query(search_term)
     resp = await es.search(
         index=index_name,
         body={
