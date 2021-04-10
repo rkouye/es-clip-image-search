@@ -31,7 +31,7 @@ def encode_query(query: str):
 
 @app.get("/")
 async def hello_world(request):
-    text_features = encode_query("dogs playing the snow")
+    text_features = encode_query(request.args.get('search'))
     resp = await es.search(
         index=index_name,
         body={
@@ -41,9 +41,10 @@ async def hello_world(request):
                         {
                             "script_score": {
                                 "query": {"match_all": {}},
+                                "min_score": "1",
                                 "script": {
                                     "source":
-                                    "cosineSimilarity(params.text_features, 'features')",
+                                    "cosineSimilarity(params.text_features, 'features')+1",
                                     "params": {"text_features": text_features},
                                 },
                             },
@@ -54,7 +55,7 @@ async def hello_world(request):
             },
             "_source": False
         },
-        size=20,
+        size=18,
         request_timeout=100
     )
     return json(resp)
