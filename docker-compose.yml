@@ -27,6 +27,17 @@ services:
     networks:
       - net1
 
+  api:
+    build:
+      dockerfile: ./api.Dockerfile
+      context: .
+    ports:
+      - "${API_PORT:-8000}:80"
+    environment:
+      ES_URL: ${ES_URL:-http://elasticsearch:9200}
+    networks:
+      - net1
+
 volumes:
   es-data:
 

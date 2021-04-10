@@ -5,7 +5,7 @@ from api.cors import add_cors_headers
 import torch
 import os
 import clip
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, TransportError
 
 app = Sanic("image-search-api")
 # Fill in CORS headers
@@ -36,30 +36,34 @@ def encode_query(query: str):
 async def search(request):
     search_term = request.args.get('search', 'dogs playing in the snow')
     text_features = encode_query(search_term)
-    resp = await es.search(
-        index=index_name,
-        body={
-            "query": {
-                "bool": {
-                    "should": [
-                        {
-                            "script_score": {
-                                "query": {"match_all": {}},
-                                "min_score": "1",
-                                "script": {
-                                    "source":
-                                    "cosineSimilarity(params.text_features, 'features')+1",
-                                    "params": {"text_features": text_features},
+    try:
+        resp = await es.search(
+            index=index_name,
+            body={
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "script_score": {
+                                    "query": {"match_all": {}},
+                                    "min_score": "1",
+                                    "script": {
+                                        "source":
+                                        "cosineSimilarity(params.text_features, 'features')+1",
+                                        "params": {"text_features": text_features},
+                                    },
                                 },
                             },
-                        },
 
-                    ],
-                }
+                        ],
+                    }
+                },
+                "_source": False
             },
-            "_source": False
-        },
-        size=18,
-        request_timeout=100
-    )
-    return json(resp)
+            size=18,
+            request_timeout=100
+        )
+        return json(resp)
+    except TransportError as e:
+        logger.error(e.info)
+        raise e
