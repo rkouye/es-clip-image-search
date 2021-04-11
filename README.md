@@ -10,6 +10,7 @@ My goal here is testing various approach for image search on elasticsearch, and 
 
 ## TODO
 
+- Speed search with [elastiknn](https://github.com/alexklibisz/elastiknn)
 - Explain architecture
 - Add image indexing onn the fly
 - Publish scripts used to compute image features
