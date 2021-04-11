@@ -57,6 +57,7 @@ export default function Home() {
           name="description"
           content="Image search engine. Powered by machine learning."
         />
+        <link rel="icon" href="/sun.png" />
       </Head>
       <a href="https://github.com/rkouye/es-clip-image-search">
         <img
@@ -67,7 +68,8 @@ export default function Home() {
       </a>
       <header className="w-full sticky top-0 z-10 bg-light shadow py-4">
         <div className="text-8xl text-center">
-          hel<span className="text-primary">io</span>s
+          heli
+          <img src="/sun.png" alt="github" className="h-12 inline" />s
         </div>
         <p className="text-center text-xs text-gray-500 mt-5">
           Search image by description
@@ -98,7 +100,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <img src={gif} className="mx-auto my-2" />
           <p className="text-center">
-            Patience... search can take around 30 seconds
+            Search can take around 30 seconds
             <button
               onClick={() => setGif(getLoadingGif())}
               className="text-primary px-2">
@@ -114,13 +116,8 @@ export default function Home() {
         {error && (
           <code className="text-danger p-2 text-center">
             Looks like the search service is down. Reload the page to retry or
-            contact me on github{" "}
-            <a href="https://github.com/rkouye/es-clip-image-search">
-              <img
-                src="/github-logo.svg"
-                alt="github"
-                className="h-6 fixed z-20 top-4 right-4"
-              />
+            <a href="https://github.com/rkouye/es-clip-image-search/issues">
+              create an issue on github
             </a>
           </code>
         )}
@@ -135,10 +132,25 @@ export default function Home() {
                   src={`https://unsplash.com/photos/${hit._id}/download`}
                   className="w-full"
                 />
+                <a
+                  href={`https://unsplash.com/photos/${hit._id}`}
+                  className="text-primary underline">
+                  source
+                </a>
               </li>
             ))}
           </ul>
         )}
+
+        <footer className="mt-16 text-center">
+          Made by{" "}
+          <a href="https://github.com/rkouye" className="text-primary">
+            <b>rkouye</b>
+          </a>
+          . Please, note that I do not own any of these pictures. Every picture
+          is linked back to its original source. This is <b>NOT</b> an image
+          distribution service.
+        </footer>
       </main>
     </div>
   );

@@ -10,6 +10,7 @@ My goal here is testing various approach for image search on elasticsearch, and 
 
 ## TODO
 
-Explain architecture
-Deploy demo
-Write local dev guide
+- Explain architecture
+- Add image indexing onn the fly
+- Publish scripts used to compute image features
+- Write local dev guide
