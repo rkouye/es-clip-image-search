@@ -115,10 +115,7 @@ export default function Home() {
         } transition-all`}>
         {error && (
           <code className="text-danger p-2 text-center">
-            Looks like the search service is down. Reload the page to retry or
-            <a href="https://github.com/rkouye/es-clip-image-search/issues">
-              create an issue on github
-            </a>
+            Looks like the search service is down. Wait a little, and try again.
           </code>
         )}
         {!error && response && response.hits && (
