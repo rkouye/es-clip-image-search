@@ -26,7 +26,8 @@ def ensure_index_exist(es_url: str, index_name: str):
 
 
 def load_photos_in_index(ids, features, es_url, index_name):
-    es = Elasticsearch([es_url])
+    es = Elasticsearch([es_url], timeout=400,
+                       max_retries=10, retry_on_timeout=True)
     now = datetime.datetime.utcnow()
     length = len(ids)
     actions = ({
@@ -36,7 +37,11 @@ def load_photos_in_index(ids, features, es_url, index_name):
         "@timestamp": now
     } for id, features in zip(ids['photo_id'], features))
 
-    loading = helpers.parallel_bulk(client=es, actions=actions)
+    loading = helpers.streaming_bulk(
+        client=es,
+        actions=actions,
+        max_retries=5
+    )
     print(f'Loading {length} photos...')
     with click.progressbar(loading, length=length) as task:
         for success, info in task:
