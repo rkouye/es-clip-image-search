@@ -41,13 +41,14 @@ export default function Home() {
   const [gif, setGif] = useState(getLoadingGif());
   const query = useDebounce(searchBarValue, 1000);
   const { data: response, error, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(
-      query || example
-    )}`,
+    () =>
+      query &&
+      searchBarValue === query &&
+      `${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(query)}`,
     fetcher,
     { revalidateOnFocus: false }
   );
-  const searching = isValidating || searchBarValue !== query;
+  const searching = isValidating;
 
   return (
     <div className="relative">
@@ -139,15 +140,17 @@ export default function Home() {
           </ul>
         )}
 
-        <footer className="mt-16 text-center">
-          Made by{" "}
-          <a href="https://github.com/rkouye" className="text-primary">
-            <b>rkouye</b>
-          </a>
-          . Please, note that I do not own any of these pictures. Every picture
-          is linked back to its original source. This is <b>NOT</b> an image
-          distribution service.
-        </footer>
+        {response && (
+          <footer className="mt-16 text-center">
+            Made by{" "}
+            <a href="https://github.com/rkouye" className="text-primary">
+              <b>rkouye</b>
+            </a>
+            . Please, note that I do not own any of these pictures. Every
+            picture is linked back to its original source. This is <b>NOT</b> an
+            image distribution service.
+          </footer>
+        )}
       </main>
     </div>
   );
