@@ -1,10 +1,10 @@
-version: "3"
+version: "3.9"
 
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_VERSION:-7.11.1}
     environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
       - discovery.type=single-node
     ulimits:
       memlock:
@@ -16,6 +16,7 @@ services:
       - "${ES_PORT:-9200}:9200"
     networks:
       - net1
+    profiles: ["elasticsearch"]
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ES_VERSION:-7.11.1}
@@ -26,6 +27,36 @@ services:
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
     networks:
       - net1
+    profiles: ["elasticsearch"]
+
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION:-1.0.0}
+    environment:
+      - "bootstrap.memory_lock=true" # along with the memlock settings below, disables swapping
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - "discovery.type=single-node"
+      - plugins.security.ssl.http.enabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+        - "${OPENSEARCH_PORT:-9200}:9200"
+    networks:
+      - net1
+    profiles: ["opensearch"]
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_VERSION:-1.0.0}
+    ports:
+      - "${OPENSEARCH_DASHBOARD_PORT:-5601}:5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]' # must be a string with no spaces when specified as an environment variable
+    networks:
+      - net1
+    profiles: ["opensearch"]
 
   api:
     build:
@@ -35,11 +66,14 @@ services:
       - "${API_PORT:-8000}:80"
     environment:
       ES_URL: ${ES_URL:-http://elasticsearch:9200}
+      OPENSEARCH_URL: ${OPENSEARCH_URL:-https://opensearch:9200}
     networks:
       - net1
+    profiles: ["backend"]
 
 volumes:
   es-data:
+  opensearch-data:
 
 networks:
   net1:
