@@ -71,6 +71,17 @@ services:
       - net1
     profiles: ["backend"]
 
+  scripts:
+    build:
+      dockerfile: ./scripts.Dockerfile
+      context: .
+    environment:
+      ES_URL: ${ES_URL:-http://elasticsearch:9200}
+      OPENSEARCH_URL: ${OPENSEARCH_URL:-https://opensearch:9200}
+    networks:
+      - net1
+    profiles: ["scripts"]
+
 volumes:
   es-data:
   opensearch-data:
