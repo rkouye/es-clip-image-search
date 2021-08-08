@@ -35,7 +35,7 @@ services:
       - "bootstrap.memory_lock=true" # along with the memlock settings below, disables swapping
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
       - "discovery.type=single-node"
-      - plugins.security.ssl.http.enabled=true
+      - "plugins.security.ssl.http.enabled=false" # disable SSL for local dev, do not use in production
     ulimits:
       memlock:
         soft: -1
@@ -53,7 +53,7 @@ services:
     ports:
       - "${OPENSEARCH_DASHBOARD_PORT:-5601}:5601"
     environment:
-      OPENSEARCH_HOSTS: '["https://opensearch:9200"]' # must be a string with no spaces when specified as an environment variable
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]' # must be a string with no spaces when specified as an environment variable
     networks:
       - net1
     profiles: ["opensearch"]
@@ -66,7 +66,9 @@ services:
       - "${API_PORT:-8000}:80"
     environment:
       ES_URL: ${ES_URL:-http://elasticsearch:9200}
-      OPENSEARCH_URL: ${OPENSEARCH_URL:-https://opensearch:9200}
+      OPENSEARCH_URL: ${OPENSEARCH_URL:-http://admin:admin@opensearch:9200}
+    volumes:
+      - "./api/:/app/api/" # mount the api directory from the host into the container  
     networks:
       - net1
     profiles: ["backend"]
@@ -77,7 +79,9 @@ services:
       context: .
     environment:
       ES_URL: ${ES_URL:-http://elasticsearch:9200}
-      OPENSEARCH_URL: ${OPENSEARCH_URL:-https://opensearch:9200}
+      OPENSEARCH_URL: ${OPENSEARCH_URL:-http://admin:admin@opensearch:9200}
+    volumes:
+      - "./scripts/:/app/scripts/" # mount the scripts directory from the host into the container
     networks:
       - net1
     profiles: ["scripts"]
