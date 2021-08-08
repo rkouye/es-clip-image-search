@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import datetime
 from elasticsearch import Elasticsearch, helpers
-from scripts.template import index_template
 import click
 
 
@@ -14,15 +13,14 @@ def read_photos(ids_filename: str, features_filename: str):
     return ids, features
 
 
-def ensure_index_exist(es_url: str, index_name: str):
+def ensure_index_exist(es_url: str, index_name: str, index_template: dict):
     es = Elasticsearch([es_url])
     index_exist = es.indices.exists(index=index_name)
     if index_exist:
-        print('Index exist')
+        print(f'Index {index_name} already exist')
     else:
-        print('Index doesn\'t exist')
         es.indices.create(index=index_name, body=index_template)
-        print('Index created')
+        print('Index {index_name} created')
 
 
 def load_photos_in_index(ids, features, es_url, index_name):
