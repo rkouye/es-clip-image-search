@@ -17,7 +17,7 @@ The demo use [Unsplash Dataset](https://unsplash.com/data), but you are not limi
 Make sure you have the latest version of [docker](https://www.docker.com/) installed. Then run :
 
 ```bash
-docker-compose --profile opensearch --profile backend up
+docker-compose --profile opensearch --profile backend --profile frontend up
 ```
 
 It will launch the following services:
@@ -25,7 +25,7 @@ It will launch the following services:
 - [OpenSearch](http://localhost:9200)
 - [OpenSearch Dashboards](http://localhost:5601)
 - [The search backend](http://localhost:8000)
-- [The search frontend](http://localhost:8080/opensearch/webapp)
+- [The search frontend](http://localhost:3000?db=opensearch)
 
 By default, opensearch credentials are `admin:admin`.
 
@@ -52,15 +52,15 @@ You can also use the [pre-computed features](https://drive.google.com/drive/fold
 
 You should have two files:
 
-- A csv file with photos ids, let call it `photos.csv`
-- A npy file with the features, let call it `features.npy`
+- A csv file with photos ids, let name it `photo_ids.csv`
+- A npy file with the features, let name it `features.npy`
 
 Move them to the `/data` folder, so the docker container used to run scripts can access them.
 
 Use the helper script to index the images. For example:
 
 ```bash
-docker-compose run --rm  scripts index-unsplash-opensearch --start 0 --end 10000 /data/photos.csv /data/features.npy
+docker-compose run --rm  scripts index-unsplash-opensearch --start 0 --end 10000 /data/photo_ids.csv /data/features.npy
 ```
 
 Will index the ids from 0 to 10000.
@@ -75,12 +75,4 @@ The backend is a python app, that embed the search query with CLIP and send an a
 
 The sources code are in the `app` and `api` folders.
 
-## Guide: Elasticsearch
-
-### TODO
-
-- Speed up search with [elastiknn](https://github.com/alexklibisz/elastiknn)
-- Explain architecture
-- Add image indexing onn the fly
-- Publish scripts used to compute image features
-- Write local dev guide
+## Guide: Elasticsearch (TODO)
