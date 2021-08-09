@@ -20,5 +20,4 @@ autopep8 = "*"
 python_version = "3.7"
 
 [scripts]
-index-precomputed = "python -m scripts.commands index-precomputed"
 api = "sanic api.server.app --debug"
