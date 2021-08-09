@@ -75,4 +75,4 @@ The backend is a python app, that embed search queries with CLIP and send an app
 
 The sources code are in the `app` and `api` folders.
 
-## Guide: Elasticsearch (TODO)
+## Guide: Elasticsearch (TODO) 🚧
