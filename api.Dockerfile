@@ -13,6 +13,6 @@ ENV CLIP_MODEL_NAME=/model.pt
 COPY --from=get_model model.pt ${CLIP_MODEL_NAME}
 WORKDIR /app
 COPY --from=build /build /app/
-COPY . /app/
+COPY ./api/ /app/api/
 EXPOSE 80
 CMD [ ".venv/bin/python", "-m", "sanic", "api.server.app", "--port=80", "--host=0.0.0.0"]
