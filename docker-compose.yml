@@ -82,6 +82,7 @@ services:
       OPENSEARCH_URL: ${OPENSEARCH_URL:-http://admin:admin@opensearch:9200}
     volumes:
       - "./scripts/:/app/scripts/" # mount the scripts directory from the host into the container
+      - "./data:/data/" # mount the data directory from the host into the container
     networks:
       - net1
     profiles: ["scripts"]
