@@ -67,11 +67,11 @@ Will index the ids from 0 to 10000.
 
 ### 4 - Launch the search
 
-Once the picture indexed, you can search for images in the frontend.
+After indexing, you can search for images in the frontend.
 
-The frontend is a simple Next.js app, that send a request to the backend.
+The frontend is a simple Next.js app, that send search queries to the backend.
 
-The backend is a python app, that embed the search query with CLIP and send an approximate k-nn request to the OpenSearch service.
+The backend is a python app, that embed search queries with CLIP and send an approximate k-nn request to the OpenSearch service.
 
 The sources code are in the `app` and `api` folders.
 
