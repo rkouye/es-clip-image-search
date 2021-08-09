@@ -73,6 +73,18 @@ services:
       - net1
     profiles: ["backend"]
 
+  app:
+    build:
+      dockerfile: ./app.Dockerfile
+      context: .
+      args: 
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    networks:
+      - net1
+    profiles: ["frontend"]
+
   scripts:
     build:
       dockerfile: ./scripts.Dockerfile
