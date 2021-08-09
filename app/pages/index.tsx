@@ -102,7 +102,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <img src={gif} className="mx-auto my-2" />
           <p className="text-center">
-            Search can take around 30 seconds
+            Searching...
             <button
               onClick={() => setGif(getLoadingGif())}
               className="text-primary px-2">
