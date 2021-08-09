@@ -5,11 +5,11 @@ from elasticsearch import Elasticsearch, helpers
 import click
 
 
-def read_photos(ids_filename: str, features_filename: str):
-    print('Loading files...', end=' ')
+def read_unsplash_photos(ids_filename: str, features_filename: str):
+    print('Loading files...', end=' ', flush=True)
     ids = pd.read_csv(ids_filename)
     features = np.load(features_filename)
-    print('✅')
+    print('✅', flush=True)
     return ids, features
 
 
@@ -20,17 +20,18 @@ def ensure_index_exist(es_url: str, index_name: str, index_template: dict):
         print(f'Index {index_name} already exist')
     else:
         es.indices.create(index=index_name, body=index_template)
-        print('Index {index_name} created')
+        print(f'Index {index_name} created')
 
 
-def load_photos_in_index(ids, features, es_url, index_name):
+def load_unsplash_photos_in_index(ids, features, es_url, index_name):
     es = Elasticsearch([es_url], timeout=400,
                        max_retries=10, retry_on_timeout=True)
     now = datetime.datetime.utcnow()
     length = len(ids)
     actions = ({
-        "_id": id,
+        "_id": f"https://unsplash.com/photos/{id}/",
         "_index": index_name,
+        "url": f"https://unsplash.com/photos/{id}/",
         "features": features,
         "@timestamp": now
     } for id, features in zip(ids['photo_id'], features))
@@ -40,7 +41,7 @@ def load_photos_in_index(ids, features, es_url, index_name):
         actions=actions,
         max_retries=5
     )
-    print(f'Loading {length} photos...')
+    print(f'Loading {length} photos...', flush=True)
     with click.progressbar(loading, length=length) as task:
         for success, info in task:
             if not success:
