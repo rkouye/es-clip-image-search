@@ -31,7 +31,8 @@ def load_unsplash_photos_in_index(ids, features, es_url, index_name):
     actions = ({
         "_id": f"https://unsplash.com/photos/{id}/",
         "_index": index_name,
-        "url": f"https://unsplash.com/photos/{id}/",
+        "sourceUrl": f"https://unsplash.com/photos/{id}/",
+        "url": f"https://unsplash.com/photos/{id}/download",
         "features": features,
         "@timestamp": now
     } for id, features in zip(ids['photo_id'], features))

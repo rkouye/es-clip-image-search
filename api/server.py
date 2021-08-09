@@ -81,7 +81,9 @@ async def search(request):
                             }
                         }
                     },
-                    "_source": False
+                    "_source": {
+                        "excludes": ["features"]
+                    },
                 },
                 size=18,
                 request_timeout=100

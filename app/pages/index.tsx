@@ -128,14 +128,14 @@ export default function Home() {
                 className="text-gray-900 p-4 bg-gray-50 shadow rounded-lg flex flex-col justify-center"
                 style={{ minHeight: "200px" }}>
                 <img
-                  src={hit.url}
+                  src={hit._source.url}
                   className="w-full"
                 />
-                <a
-                  href={hit.url}
+                {hit._source.sourceUrl && <a
+                  href={hit.sourceUrl}
                   className="text-primary underline">
                   source
-                </a>
+                </a>}
               </li>
             ))}
           </ul>

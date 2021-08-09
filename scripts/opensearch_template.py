@@ -11,6 +11,9 @@ index_template = {
             "url": {
                 "type": "keyword",
             },
+            "sourceUrl": {
+                "type": "keyword",
+            },
             "features": {
                 "type": "knn_vector",
                 "dimension": 512,
