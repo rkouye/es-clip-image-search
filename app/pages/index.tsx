@@ -37,6 +37,7 @@ function getLoadingGif() {
 }
 
 export default function Home() {
+  const db = "opensearch";
   const [searchBarValue, setSearchBarValue] = useState("");
   const [gif, setGif] = useState(getLoadingGif());
   const query = useDebounce(searchBarValue, 1000);
@@ -44,7 +45,7 @@ export default function Home() {
     () =>
       query &&
       searchBarValue === query &&
-      `${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(query)}`,
+      `${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(query)}&db=${db}`,
     fetcher,
     { revalidateOnFocus: false }
   );
@@ -127,11 +128,11 @@ export default function Home() {
                 className="text-gray-900 p-4 bg-gray-50 shadow rounded-lg flex flex-col justify-center"
                 style={{ minHeight: "200px" }}>
                 <img
-                  src={`https://unsplash.com/photos/${hit._id}/download`}
+                  src={hit.url}
                   className="w-full"
                 />
                 <a
-                  href={`https://unsplash.com/photos/${hit._id}`}
+                  href={hit.url}
                   className="text-primary underline">
                   source
                 </a>
