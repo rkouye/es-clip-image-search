@@ -1,10 +1,11 @@
+import { GetStaticProps } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import useSWR from "swr";
 import styles from "./index.module.css";
 
-const fetcher = async (url: string) => {
-  const res = await fetch(url);
+const fetcher = async (query: string, db: "opensearch" | "elasticsearch") => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(query)}&db=${db}`);
 
   // If the status code is not in the range 200-299,
   // we still try to parse and throw it.
@@ -41,15 +42,15 @@ export default function Home() {
   const [searchBarValue, setSearchBarValue] = useState("");
   const [gif, setGif] = useState(getLoadingGif());
   const query = useDebounce(searchBarValue, 1000);
-  const { data: response, error, isValidating } = useSWR(
+  const { data: response, error, isValidating, mutate } = useSWR(
     () =>
       query &&
       searchBarValue === query &&
-      `${process.env.NEXT_PUBLIC_API_URL}?search=${encodeURIComponent(query)}&db=${db}`,
+      [query, db],
     fetcher,
     { revalidateOnFocus: false }
   );
-  const searching = isValidating;
+  const searching = !response && !error && isValidating;
 
   return (
     <div className="relative">
@@ -77,6 +78,7 @@ export default function Home() {
           Search image by description
         </p>
         <div className="mx-auto max-w-xl p-4 relative">
+          <button onClick={() => mutate()}>
           <svg
             height="24px"
             viewBox="0 0 24 24"
@@ -88,6 +90,7 @@ export default function Home() {
             <path d="M0 0h24v24H0V0z" fill="none" />
             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
           </svg>
+          </button>
           <input
             className={`${styles.searchBar} text-gray-600`}
             type="text"
@@ -125,14 +128,14 @@ export default function Home() {
             {response.hits.hits.map((hit: any, index: number) => (
               <li
                 key={index}
-                className="text-gray-900 p-4 bg-gray-50 shadow rounded-lg flex flex-col justify-center"
+                className={`text-gray-900 p-4 bg-gray-50 shadow rounded-lg flex flex-col justify-center ${styles.card}`}
                 style={{ minHeight: "200px" }}>
                 <img
                   src={hit._source.url}
                   className="w-full"
                 />
                 {hit._source.sourceUrl && <a
-                  href={hit.sourceUrl}
+                  href={hit._source.sourceUrl}
                   className="text-primary underline">
                   source
                 </a>}
@@ -172,3 +175,14 @@ function useDebounce<T>(value: T, delay: number) {
 
   return debouncedValue;
 }
+
+export const getStaticProps: GetStaticProps = async function () {
+  // Warmup the search backend
+  const warmup = await fetcher(example, "opensearch");
+  return {
+    props: {
+      warmup,
+    },
+    revalidate: 60,
+  };
+};
