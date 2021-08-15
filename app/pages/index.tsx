@@ -175,14 +175,3 @@ function useDebounce<T>(value: T, delay: number) {
 
   return debouncedValue;
 }
-
-export const getStaticProps: GetStaticProps = async function () {
-  // Warmup the search backend
-  const warmup = await fetcher(example, "opensearch");
-  return {
-    props: {
-      warmup,
-    },
-    revalidate: 60,
-  };
-};
