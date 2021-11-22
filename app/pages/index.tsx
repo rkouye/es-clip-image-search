@@ -131,11 +131,11 @@ export default function Home() {
                 className={`text-gray-900 p-4 bg-gray-50 shadow rounded-lg flex flex-col justify-center ${styles.card}`}
                 style={{ minHeight: "200px" }}>
                 <img
-                  src={hit._source.url}
+                  src={hit._source.url+'?w=640'}
                   className="w-full"
                 />
                 {hit._source.sourceUrl && <a
-                  href={hit._source.sourceUrl+'?w=640'}
+                  href={hit._source.sourceUrl}
                   className="text-primary underline">
                   source
                 </a>}
