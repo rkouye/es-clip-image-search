@@ -135,7 +135,7 @@ export default function Home() {
                   className="w-full"
                 />
                 {hit._source.sourceUrl && <a
-                  href={hit._source.sourceUrl}
+                  href={hit._source.sourceUrl+'?w=640'}
                   className="text-primary underline">
                   source
                 </a>}
