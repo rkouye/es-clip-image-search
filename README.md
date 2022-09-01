@@ -2,8 +2,6 @@
 
 Sample implementation of natural language image search with OpenAI's [CLIP](https://github.com/openai/CLIP) and [Elasticsearch](https://github.com/elastic/elasticsearch) or [OpenSearch](https://github.com/opensearch-project/OpenSearch).
 
-[🌞 Try it](https://helios-app.vercel.app/)
-
 ![Demo](demo.png)
 
 Inspired by https://github.com/haltakov/natural-language-image-search.
